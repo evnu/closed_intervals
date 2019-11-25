@@ -21,5 +21,7 @@ jobs:
       run: mix test
     - name: Credo
       run: mix credo --strict
+    - name: Check README
+      run: mix docception README.md
     - name: Dialyzer
       run: mix dialyzer --halt-exit-status
