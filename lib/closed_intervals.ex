@@ -210,4 +210,24 @@ defmodule ClosedIntervals do
       cut: cut
     )
   end
+
+  @doc """
+  Serialize `ClosedIntervals` into a list.
+
+  ## Example
+
+      iex> closed_intervals = from([1, 2, 3])
+      iex> to_list(closed_intervals)
+      [1, 2, 3]
+      iex> closed_intervals == closed_intervals |> to_list() |> from()
+      true
+
+  """
+  def to_list(closed_intervals = %__MODULE__{}) do
+    closed_intervals
+    |> leaf_intervals()
+    |> Enum.map(fn {left, right} -> [left, right] end)
+    |> Enum.concat()
+    |> Enum.uniq()
+  end
 end
