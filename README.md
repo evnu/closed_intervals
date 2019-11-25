@@ -53,7 +53,8 @@ is in front of all defined intervals. Similarly for `100`, we retrieve `{30,
 
 Defining a linear space with plain numbers is boring, however. Where `ClosedIntervals`
 shines is to define an order on multi-dimensional values, where an order in one dimension
-makes sense. This is done by defining an explicit order on `from/2` and `get_interval/3`:
+makes sense. This is done by defining an explicit order on
+`ClosedIntervals.from/2` and `ClosedIntervals.get_interval/2`:
 
     iex> import ClosedIntervals
     iex> points = [%{idx: 1, data: :hello}, %{idx: 5, data: :world}]
@@ -64,7 +65,7 @@ makes sense. This is done by defining an explicit order on `from/2` and `get_int
 
 `ClosedIntervals` can also handle non-unique indices. This is useful when defining
 a function step-wise. Note that in such a case, the intervals for a value should be retrieved
-using `ClosedIntervals.get_all_intervals/4`, as a value may belong to more than one interval. For this,
+using `ClosedIntervals.get_all_intervals/2`, as a value may belong to more than one interval. For this,
 we must define an equality function as well. Usually, this function compares the same fields as
 the order function.
 
