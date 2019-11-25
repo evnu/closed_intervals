@@ -2,7 +2,7 @@
 
 [![Hex](https://img.shields.io/hexpm/v/closed_intervals.svg)](https://hex.pm/packages/closed_intervals)
 ![Build Status](https://github.com/evnu/closed_intervals/workflows/CI/badge.svg?branch=master)
-![License](https://img.shields.io/hexpm/l/closed_intervals.svg)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 `ClosedIntervals` implements a tree storing a set of _closed_ intervals such that the
 intervals cover a one-dimensional space completely. So for a set of points `{x1, x2, .., xN}`,
