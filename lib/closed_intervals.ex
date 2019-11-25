@@ -1,19 +1,22 @@
 defmodule ClosedIntervals do
   @moduledoc """
-  An ClosedIntervals datastructure.
+  A ClosedIntervals datastructure.
 
-  An interval tree represents a set of closed intervals and provides functions to
+  `ClosedIntervals` represents a set of closed intervals and provides functions to
   retrieve the interval to which a given value belongs to. `ClosedIntervals` can
   handle arbitrary data, as long as it can be ordered in a sensible way. Users
   can either use the default term order `&<=/2` if that suits their needs, or
   provide an explicit order function.
 
   """
+  require Record
+
   @enforce_keys [:tree, :order, :eq]
   defstruct @enforce_keys
 
-  require Record
-  # This type is not meant for public use.
+  @doc """
+  This is the internal tree representation. It is not intended to be used publicly.
+  """
   Record.defrecord(:closed_intervals, [
     :left,
     :right,
@@ -23,7 +26,7 @@ defmodule ClosedIntervals do
   ])
 
   @doc """
-  Create a new ClosedIntervals from points.
+  Create a new `ClosedIntervals` from points.
 
   This function creates a new `ClosedIntervals` from an `Enum` of points. The points
   can be of any form, as long as they can be ordered sensibly. For types where the
@@ -31,6 +34,9 @@ defmodule ClosedIntervals do
   a linear ordering along the interval range, a custom order can be applied using the
   `order` parameter. `order` defaults to `&<=/2`. Note that a custom order should return
   true for equal points, if the resulting order has to be stable.
+
+  Additionally, an explicit equality function can be provided which is used in
+  `ClosedIntervals.get_interval/2` and `ClosedIntervals.get_all_intervals/2`.
 
   ## Errors
 
@@ -87,7 +93,8 @@ defmodule ClosedIntervals do
   @doc """
   Retrieve a list of all leaf intervals.
 
-  A leaf interval is an interval which has been constructed from two adjacent points.
+  A leaf interval is an interval which has been constructed from two adjacent
+  points. It does not expand to `:"-inf"` or `:"+inf"`.
 
   ## Example
 
