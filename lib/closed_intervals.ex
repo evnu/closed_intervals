@@ -257,4 +257,45 @@ defmodule ClosedIntervals do
     |> Enum.concat()
     |> Enum.uniq()
   end
+
+  @doc """
+  Map a function over all intervals.
+
+  ## Example
+
+      iex> closed_intervals = from([1, 2, 3])
+      iex> map(closed_intervals, & &1 + 1) |> to_list()
+      [2, 3, 4]
+  """
+  @spec map(t(data), (data -> data)) :: t(data) when data: var
+  def map(closed_intervals = %__MODULE__{}, mapper) when is_function(mapper, 1) do
+    %__MODULE__{closed_intervals | tree: map1(closed_intervals.tree, mapper)}
+  end
+
+  defp map1(closed_intervals = closed_intervals(cut: nil), mapper) do
+    closed_intervals(left_bound: left_bound, right_bound: right_bound) = closed_intervals
+
+    closed_intervals(closed_intervals,
+      left_bound: mapper.(left_bound),
+      right_bound: mapper.(right_bound)
+    )
+  end
+
+  defp map1(closed_intervals = closed_intervals(), mapper) do
+    closed_intervals(
+      left: left,
+      right: right,
+      left_bound: left_bound,
+      right_bound: right_bound,
+      cut: cut
+    ) = closed_intervals
+
+    closed_intervals(closed_intervals,
+      left: map1(left, mapper),
+      right: map1(right, mapper),
+      left_bound: mapper.(left_bound),
+      right_bound: mapper.(right_bound),
+      cut: mapper.(cut)
+    )
+  end
 end
