@@ -14,6 +14,12 @@ defmodule ClosedIntervals do
   @enforce_keys [:tree, :order, :eq]
   defstruct @enforce_keys
 
+  @type t(data) :: %__MODULE__{
+          tree: tree(data),
+          order: (data, data -> boolean()),
+          eq: (data, data -> boolean())
+        }
+
   @doc """
   This is the internal tree representation. It is not intended to be used publicly.
   """
@@ -24,6 +30,15 @@ defmodule ClosedIntervals do
     :right_bound,
     :cut
   ])
+
+  @type tree(data) ::
+          record(:closed_intervals,
+            left: nil | tree(data),
+            right: nil | tree(data),
+            left_bound: data,
+            right_bound: data,
+            cut: nil | data
+          )
 
   @doc """
   Create a new `ClosedIntervals` from points.
@@ -65,6 +80,7 @@ defmodule ClosedIntervals do
   * `:eq`: A custom equality defined on the points used to construct the `ClosedIntervals`
 
   """
+  @spec from(Enum.t(), Keyword.t()) :: t(term())
   def from(enum, args \\ []) do
     order = Keyword.get(args, :order, &<=/2)
     eq = Keyword.get(args, :eq)
@@ -102,11 +118,14 @@ defmodule ClosedIntervals do
       [{1, 2}, {2, 3}]
 
   """
+  @spec leaf_intervals(t(data)) :: [{data, data}] when data: var
   def leaf_intervals(%__MODULE__{tree: tree}) do
     tree |> leaf_intervals1() |> List.flatten()
   end
 
-  defp leaf_intervals1(closed_intervals(cut: nil, left_bound: left_bound, right_bound: right_bound)) do
+  defp leaf_intervals1(
+         closed_intervals(cut: nil, left_bound: left_bound, right_bound: right_bound)
+       ) do
     [{left_bound, right_bound}]
   end
 
@@ -123,6 +142,8 @@ defmodule ClosedIntervals do
       iex> get_interval(closed_intervals, 3)
       {2, 5}
   """
+  @spec get_interval(t(data), data) :: {data, data} | {:"-inf", data} | {data, :"+inf"}
+        when data: var
   def get_interval(closed_intervals = %__MODULE__{}, value) do
     case get_all_intervals(closed_intervals, value) do
       [interval] ->
@@ -145,6 +166,8 @@ defmodule ClosedIntervals do
   which are placed right at the interval bounds can then belong to multiple closed intervals.
 
   """
+  @spec get_all_intervals(t(data), data) :: [{data, data}] | [{:"-inf", data}] | [{data, :"+inf"}]
+        when data: var
   def get_all_intervals(%__MODULE__{tree: tree, eq: eq, order: order}, value) do
     eq = eq || fn _, _ -> false end
 
@@ -165,7 +188,10 @@ defmodule ClosedIntervals do
   end
 
   defp get_all_intervals1(closed_intervals = closed_intervals(cut: nil), _value, _eq, _order) do
-    [{closed_intervals(closed_intervals, :left_bound), closed_intervals(closed_intervals, :right_bound)}]
+    [
+      {closed_intervals(closed_intervals, :left_bound),
+       closed_intervals(closed_intervals, :right_bound)}
+    ]
   end
 
   defp get_all_intervals1(closed_intervals = closed_intervals(), value, eq, order) do
@@ -223,6 +249,7 @@ defmodule ClosedIntervals do
       true
 
   """
+  @spec to_list(t(data)) :: [data] when data: var
   def to_list(closed_intervals = %__MODULE__{}) do
     closed_intervals
     |> leaf_intervals()
