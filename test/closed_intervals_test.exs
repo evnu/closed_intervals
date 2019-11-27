@@ -96,9 +96,13 @@ defmodule ClosedIntervalsTest do
 
     tree = from(points, order: order, eq: eq)
 
+    assert [{:"-inf", a}] == get_all_intervals(tree, %{idx: 0})
     assert [{:"-inf", a}, {a, b}] == get_all_intervals(tree, %{idx: 1})
     assert [{a, b}, {b, c}] == get_all_intervals(tree, %{idx: 2})
     assert [{a, b}] == get_all_intervals(tree, %{idx: 1.5})
+
+    assert [{e, :"+inf"}] == get_all_intervals(tree, %{idx: 5})
+    assert [{e, :"+inf"}, {d, e}] == get_all_intervals(tree, %{idx: 4})
 
     # non-unique idx
     assert [{b, c}, {c, d}, {d, e}] == get_all_intervals(tree, %{idx: 3})

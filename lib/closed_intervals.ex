@@ -171,19 +171,31 @@ defmodule ClosedIntervals do
   def get_all_intervals(%__MODULE__{tree: tree, eq: eq, order: order}, value) do
     eq = eq || fn _, _ -> false end
 
-    infinity_interval =
-      cond do
-        order.(value, closed_intervals(tree, :left_bound)) ->
-          [{:"-inf", closed_intervals(tree, :left_bound)}]
+    left_bound = closed_intervals(tree, :left_bound)
+    right_bound = closed_intervals(tree, :right_bound)
 
-        order.(closed_intervals(tree, :right_bound), value) ->
-          [{closed_intervals(tree, :right_bound), :"+inf"}]
+    cond do
+      order.(value, left_bound) ->
+        neg_inf = [{:"-inf", closed_intervals(tree, :left_bound)}]
 
-        true ->
-          []
-      end
+        if eq.(value, left_bound) do
+          neg_inf ++ get_all_intervals1(tree, value, eq, order)
+        else
+          neg_inf
+        end
 
-    (infinity_interval ++ get_all_intervals1(tree, value, eq, order))
+      order.(right_bound, value) ->
+        pos_inf = [{closed_intervals(tree, :right_bound), :"+inf"}]
+
+        if eq.(value, right_bound) do
+          pos_inf ++ get_all_intervals1(tree, value, eq, order)
+        else
+          pos_inf
+        end
+
+      true ->
+        get_all_intervals1(tree, value, eq, order)
+    end
     |> List.flatten()
   end
 
