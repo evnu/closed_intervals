@@ -28,5 +28,7 @@ jobs:
       run: mix credo --strict
     - name: Check README
       run: mix docception README.md
+    - name: Formatter
+      run: mix format --check-formatted
     - name: Dialyzer
       run: mix dialyzer --halt-exit-status
