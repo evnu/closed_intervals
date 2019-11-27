@@ -9,6 +9,13 @@ $ mix deps.get
 $ mix run -e Benchmark.run
 ```
 
+Optionally, a subset of the available benchmarks can be chosen with the environment
+variable "BENCHMARKS"
+
+```
+$ BENCHMARKS=from,to_list mix run -e Benchmark.run
+```
+
 ## Results
 
 See `results.dat` for my results. `ClosedIntervals` is very fast when retrieving
