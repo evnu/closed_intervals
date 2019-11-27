@@ -13,6 +13,10 @@ defmodule LinearSearch do
     get_interval1(intervals, value)
   end
 
+  def to_list(intervals) do
+    Enum.map(intervals, fn {left, _} -> left end)
+  end
+
   defp get_interval1([{_, last_bound}], _) do
     {last_bound, :"+inf"}
   end

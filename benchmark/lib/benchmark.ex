@@ -43,5 +43,16 @@ defmodule Benchmark do
       inputs: inputs |> Enum.zip(inputs) |> Map.new(),
       memory_time: 2
     )
+
+    #
+    # How costly is turning such a tree into a list?
+    #
+    Benchee.run(
+      %{
+        "ClosedIntervals.to_list/1" => fn -> ClosedIntervals.to_list(closed_intervals) end,
+        "LinearSearch.to_list/1" => fn -> LinearSearch.to_list(intervals) end,
+      },
+      memory_time: 2
+    )
   end
 end

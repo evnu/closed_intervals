@@ -1,0 +1,177 @@
+Operating System: Linux
+CPU Information: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
+Number of Available Cores: 4
+Available memory: 19.32 GB
+Elixir 1.9.2
+Erlang 22.1
+
+Benchmark suite executing with the following configuration:
+warmup: 2 s
+time: 5 s
+memory time: 2 s
+parallel: 1
+inputs: 1..10, 1..100, 1..1000
+Estimated total run time: 54 s
+
+Benchmarking ClosedIntervals.from/1 with input 1..10...
+Benchmarking ClosedIntervals.from/1 with input 1..100...
+Benchmarking ClosedIntervals.from/1 with input 1..1000...
+Benchmarking LinearSearch.from/2 with input 1..10...
+Benchmarking LinearSearch.from/2 with input 1..100...
+Benchmarking LinearSearch.from/2 with input 1..1000...
+
+##### With input 1..10 #####
+Name                             ips        average  deviation         median         99th %
+ClosedIntervals.from/1      363.57 K        2.75 μs   ±627.75%        2.46 μs        4.42 μs
+LinearSearch.from/2         206.23 K        4.85 μs   ±404.06%        3.94 μs        8.46 μs
+
+Comparison: 
+ClosedIntervals.from/1      363.57 K
+LinearSearch.from/2         206.23 K - 1.76x slower +2.10 μs
+
+Memory usage statistics:
+
+Name                      Memory usage
+ClosedIntervals.from/1         3.14 KB
+LinearSearch.from/2            6.40 KB - 2.04x memory usage +3.26 KB
+
+**All measurements for memory usage were the same**
+
+##### With input 1..100 #####
+Name                             ips        average  deviation         median         99th %
+ClosedIntervals.from/1       31.79 K       31.46 μs    ±15.36%       30.41 μs       47.77 μs
+LinearSearch.from/2          26.20 K       38.17 μs    ±18.94%       36.65 μs       63.41 μs
+
+Comparison: 
+ClosedIntervals.from/1       31.79 K
+LinearSearch.from/2          26.20 K - 1.21x slower +6.72 μs
+
+Memory usage statistics:
+
+Name                      Memory usage
+ClosedIntervals.from/1        40.84 KB
+LinearSearch.from/2           62.93 KB - 1.54x memory usage +22.09 KB
+
+**All measurements for memory usage were the same**
+
+##### With input 1..1000 #####
+Name                             ips        average  deviation         median         99th %
+LinearSearch.from/2           2.34 K      426.84 μs    ±18.93%      404.26 μs      737.23 μs
+ClosedIntervals.from/1        2.17 K      460.99 μs    ±15.10%      441.43 μs      702.29 μs
+
+Comparison: 
+LinearSearch.from/2           2.34 K
+ClosedIntervals.from/1        2.17 K - 1.08x slower +34.15 μs
+
+Memory usage statistics:
+
+Name                      Memory usage
+LinearSearch.from/2          623.46 KB
+ClosedIntervals.from/1       476.67 KB - 0.76x memory usage -146.78906 KB
+
+**All measurements for memory usage were the same**
+Operating System: Linux
+CPU Information: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
+Number of Available Cores: 4
+Available memory: 19.32 GB
+Elixir 1.9.2
+Erlang 22.1
+
+Benchmark suite executing with the following configuration:
+warmup: 2 s
+time: 5 s
+memory time: 2 s
+parallel: 1
+inputs: 244, 299, 881
+Estimated total run time: 54 s
+
+Benchmarking ClosedIntervals.get_interval/2 with input 244...
+Benchmarking ClosedIntervals.get_interval/2 with input 299...
+Benchmarking ClosedIntervals.get_interval/2 with input 881...
+Benchmarking LinearSearch.get_interval/2 with input 244...
+Benchmarking LinearSearch.get_interval/2 with input 299...
+Benchmarking LinearSearch.get_interval/2 with input 881...
+
+##### With input 244 #####
+Name                                     ips        average  deviation         median         99th %
+ClosedIntervals.get_interval/2        1.49 M        0.67 μs  ±3386.54%        0.58 μs        1.04 μs
+LinearSearch.get_interval/2           0.20 M        4.96 μs   ±184.15%        4.89 μs        6.76 μs
+
+Comparison: 
+ClosedIntervals.get_interval/2        1.49 M
+LinearSearch.get_interval/2           0.20 M - 7.40x slower +4.29 μs
+
+Memory usage statistics:
+
+Name                              Memory usage
+ClosedIntervals.get_interval/2            56 B
+LinearSearch.get_interval/2                0 B - 0.00x memory usage -56 B
+
+**All measurements for memory usage were the same**
+
+##### With input 299 #####
+Name                                     ips        average  deviation         median         99th %
+ClosedIntervals.get_interval/2        1.48 M        0.68 μs  ±3211.09%        0.60 μs        1.06 μs
+LinearSearch.get_interval/2          0.165 M        6.08 μs    ±35.21%        5.99 μs        8.20 μs
+
+Comparison: 
+ClosedIntervals.get_interval/2        1.48 M
+LinearSearch.get_interval/2          0.165 M - 8.99x slower +5.40 μs
+
+Memory usage statistics:
+
+Name                              Memory usage
+ClosedIntervals.get_interval/2            56 B
+LinearSearch.get_interval/2                0 B - 0.00x memory usage -56 B
+
+**All measurements for memory usage were the same**
+
+##### With input 881 #####
+Name                                     ips        average  deviation         median         99th %
+ClosedIntervals.get_interval/2        1.49 M        0.67 μs  ±3307.21%        0.59 μs        1.05 μs
+LinearSearch.get_interval/2         0.0562 M       17.79 μs    ±15.17%       17.63 μs       24.43 μs
+
+Comparison: 
+ClosedIntervals.get_interval/2        1.49 M
+LinearSearch.get_interval/2         0.0562 M - 26.56x slower +17.12 μs
+
+Memory usage statistics:
+
+Name                              Memory usage
+ClosedIntervals.get_interval/2            56 B
+LinearSearch.get_interval/2                0 B - 0.00x memory usage -56 B
+
+**All measurements for memory usage were the same**
+Operating System: Linux
+CPU Information: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
+Number of Available Cores: 4
+Available memory: 19.32 GB
+Elixir 1.9.2
+Erlang 22.1
+
+Benchmark suite executing with the following configuration:
+warmup: 2 s
+time: 5 s
+memory time: 2 s
+parallel: 1
+inputs: none specified
+Estimated total run time: 18 s
+
+Benchmarking ClosedIntervals.to_list/1...
+Benchmarking LinearSearch.to_list/1...
+
+Name                                ips        average  deviation         median         99th %
+LinearSearch.to_list/1          50.35 K       19.86 μs    ±36.17%       19.36 μs       27.68 μs
+ClosedIntervals.to_list/1        2.06 K      486.08 μs    ±32.12%      455.26 μs      964.06 μs
+
+Comparison: 
+LinearSearch.to_list/1          50.35 K
+ClosedIntervals.to_list/1        2.06 K - 24.47x slower +466.22 μs
+
+Memory usage statistics:
+
+Name                         Memory usage
+LinearSearch.to_list/1           15.61 KB
+ClosedIntervals.to_list/1       494.40 KB - 31.67x memory usage +478.79 KB
+
+**All measurements for memory usage were the same**
