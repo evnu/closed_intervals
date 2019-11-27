@@ -16,7 +16,7 @@ Add the `closed_intervals` dependency to your `mix.exs`:
 ```elixir
 def deps do
   [
-    {:closed_intervals, "~> 0.1"}
+    {:closed_intervals, "~> 0.3"}
   ]
 end
 ```
