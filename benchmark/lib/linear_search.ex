@@ -14,7 +14,10 @@ defmodule LinearSearch do
   end
 
   def to_list(intervals) do
-    Enum.map(intervals, fn {left, _} -> left end)
+    intervals
+    |> Enum.map(fn {left, right} -> [left, right] end)
+    |> Enum.concat()
+    |> Enum.uniq()
   end
 
   defp get_interval1([{_, last_bound}], _) do
