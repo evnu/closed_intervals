@@ -310,4 +310,29 @@ defmodule ClosedIntervals do
       cut: mapper.(cut)
     )
   end
+
+  @doc """
+  Retrieve the left bound of a `ClosedIntervals`.
+
+  ## Example
+
+      iex> [1, 2, 3] |> from() |> left_bound()
+      1
+
+  """
+  def left_bound(%__MODULE__{tree: tree}) do
+    closed_intervals(tree, :left_bound)
+  end
+
+  @doc """
+  Retrieve the right bound of a `ClosedIntervals`.
+
+  ## Example
+
+      iex> [1, 2, 3] |> from() |> right_bound()
+      3
+  """
+  def right_bound(%__MODULE__{tree: tree}) do
+    closed_intervals(tree, :right_bound)
+  end
 end
