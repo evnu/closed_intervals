@@ -34,7 +34,8 @@ defmodule ClosedIntervals.MixProject do
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:docception, "~> 0.3", only: [:test, :dev], runtime: false},
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.7", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0.0-rc.7", only: [:dev], runtime: false},
+      {:propcheck, "~> 1.2", only: [:dev, :test]}
     ]
   end
 
