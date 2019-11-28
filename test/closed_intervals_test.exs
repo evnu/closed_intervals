@@ -136,6 +136,10 @@ defmodule ClosedIntervalsTest do
     )
   end
 
+  test "inspect" do
+    assert "#ClosedIntervals<[{-1, 0}, {0, 0}]>" == [0, 0, -1] |> from() |> inspect()
+  end
+
   defp gen_list_with_at_least_two_elements do
     let [
       a <- integer(),

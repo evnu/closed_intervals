@@ -83,6 +83,14 @@ the order function.
 	{%{idx: 1, data: :between}, %{idx: 5, data: :world}}
     ]
 
+## Inspect
+
+`ClosedIntervals` implements the `Inspect` protocol, as trees tend to be large.
+
+    iex> import ClosedIntervals
+    iex> from([0, 0, -1])
+    #ClosedIntervals<[{-1, 0}, {0, 0}]>
+
 ## Internals
 
 `ClosedIntervals` uses a tree of tuples to represent the set of intervals. Using

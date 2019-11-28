@@ -448,4 +448,16 @@ defmodule ClosedIntervals do
   def right_bound(tree = closed_intervals()) do
     closed_intervals(tree, :right_bound)
   end
+
+  defimpl Inspect, for: ClosedIntervals do
+    import Inspect.Algebra
+
+    def inspect(closed_intervals, opts) do
+      concat([
+        "#ClosedIntervals<",
+        to_doc(ClosedIntervals.leaf_intervals(closed_intervals), opts),
+        ">"
+      ])
+    end
+  end
 end
