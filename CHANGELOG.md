@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0
+
+* Added functions and tests to reconstruct a `ClosedIntervals` from a list or from leafs
+* Implemented `Inspect` protocol
+* Added benchmarks and option to run only a subset of benchmarks
+
 ## 0.3.0
 
 * Fix `get_all_intervals/2`
