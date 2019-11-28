@@ -321,6 +321,10 @@ defmodule ClosedIntervals do
 
   """
   def left_bound(%__MODULE__{tree: tree}) do
+    left_bound(tree)
+  end
+
+  def left_bound(tree = closed_intervals()) do
     closed_intervals(tree, :left_bound)
   end
 
@@ -333,6 +337,10 @@ defmodule ClosedIntervals do
       3
   """
   def right_bound(%__MODULE__{tree: tree}) do
+    right_bound(tree)
+  end
+
+  def right_bound(tree = closed_intervals()) do
     closed_intervals(tree, :right_bound)
   end
 end
