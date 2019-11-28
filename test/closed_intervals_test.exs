@@ -1,9 +1,10 @@
 defmodule ClosedIntervalsTest do
   use ExUnit.Case
-
   doctest ClosedIntervals, import: true
 
-  import ClosedIntervals
+  import ClosedIntervals, except: [map: 2]
+
+  use PropCheck
 
   describe "default order" do
     test "from" do
@@ -107,5 +108,41 @@ defmodule ClosedIntervalsTest do
     # non-unique idx
     assert [{b, c}, {c, d}, {d, e}] == get_all_intervals(tree, %{idx: 3})
     assert [{d, e}] == get_all_intervals(tree, %{idx: 3.5})
+  end
+
+  property "can reconstruct ClosedIntervals with from_leaf_intervals/1,2" do
+    numtests(
+      10_000,
+      forall numbers <- gen_list_with_at_least_two_elements() do
+        closed_intervals = from(numbers)
+        leaf_intervals = leaf_intervals(closed_intervals)
+        from_leaf_intervals = from_leaf_intervals(leaf_intervals)
+
+        equals(closed_intervals, from_leaf_intervals)
+      end
+    )
+  end
+
+  property "can reconstruct ClosedIntervals with from/1,2" do
+    numtests(
+      10_000,
+      forall numbers <- gen_list_with_at_least_two_elements() do
+        closed_intervals = from(numbers)
+        points = to_list(closed_intervals)
+        from_points = from(points)
+
+        equals(closed_intervals, from_points)
+      end
+    )
+  end
+
+  defp gen_list_with_at_least_two_elements do
+    let [
+      a <- integer(),
+      b <- integer(),
+      rest <- list(integer())
+    ] do
+      [a, b | rest]
+    end
   end
 end
