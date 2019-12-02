@@ -9,36 +9,18 @@ defmodule ClosedIntervals do
   provide an explicit order function.
 
   """
-  require Record
+
+  alias ClosedIntervals.Tree
+  require Tree
 
   @enforce_keys [:tree, :order, :eq]
   defstruct @enforce_keys
 
   @type t(data) :: %__MODULE__{
-          tree: tree(data),
+          tree: Tree.t(data),
           order: (data, data -> boolean()),
           eq: (data, data -> boolean())
         }
-
-  @doc """
-  This is the internal tree representation. It is not intended to be used publicly.
-  """
-  Record.defrecord(:closed_intervals, [
-    :left,
-    :right,
-    :left_bound,
-    :right_bound,
-    :cut
-  ])
-
-  @type tree(data) ::
-          record(:closed_intervals,
-            left: nil | tree(data),
-            right: nil | tree(data),
-            left_bound: data,
-            right_bound: data,
-            cut: nil | data
-          )
 
   @doc """
   Create a new `ClosedIntervals` from points.
@@ -87,7 +69,7 @@ defmodule ClosedIntervals do
     case Enum.sort(enum, order) do
       points = [_, _ | _] ->
         %__MODULE__{
-          tree: construct(points),
+          tree: Tree.construct(points),
           order: order,
           eq: eq
         }
@@ -135,13 +117,8 @@ defmodule ClosedIntervals do
   def from_leaf_intervals(leaf_intervals = [_ | _], args \\ []) do
     tree =
       leaf_intervals
-      |> Enum.map(fn {left, right} ->
-        closed_intervals(
-          left_bound: left,
-          right_bound: right
-        )
-      end)
-      |> from_leaf_intervals1()
+      |> Enum.map(&Tree.from_bounds/1)
+      |> Tree.from_leaf_intervals()
 
     {order, eq} = parse_args!(args)
 
@@ -150,49 +127,6 @@ defmodule ClosedIntervals do
       order: order,
       eq: eq
     }
-  end
-
-  defp from_leaf_intervals1([leaf]) do
-    leaf
-  end
-
-  defp from_leaf_intervals1([
-         left = closed_intervals(left_bound: left_bound, right_bound: cut),
-         right = closed_intervals(left_bound: cut, right_bound: right_bound)
-       ]) do
-    closed_intervals(
-      left: left,
-      right: right,
-      left_bound: left_bound,
-      right_bound: right_bound,
-      cut: cut
-    )
-  end
-
-  defp from_leaf_intervals1(leafs) do
-    len = length(leafs)
-    middle = round(len / 2)
-    {left, right} = Enum.split(leafs, middle)
-
-    left_right_bound = left |> List.last() |> right_bound()
-    right_left_bound = right |> List.first() |> left_bound()
-
-    if left_right_bound != right_left_bound do
-      raise ArgumentError, "Expected cut element between the middle two elements"
-    end
-
-    cut = left_right_bound
-
-    left = from_leaf_intervals1(left)
-    right = from_leaf_intervals1(right)
-
-    closed_intervals(
-      left: left,
-      right: right,
-      left_bound: closed_intervals(left, :left_bound),
-      right_bound: closed_intervals(right, :right_bound),
-      cut: cut
-    )
   end
 
   @doc """
@@ -212,17 +146,7 @@ defmodule ClosedIntervals do
   """
   @spec leaf_intervals(t(data)) :: [{data, data}] when data: var
   def leaf_intervals(%__MODULE__{tree: tree}) do
-    tree |> leaf_intervals1() |> List.flatten()
-  end
-
-  defp leaf_intervals1(
-         closed_intervals(cut: nil, left_bound: left_bound, right_bound: right_bound)
-       ) do
-    [{left_bound, right_bound}]
-  end
-
-  defp leaf_intervals1(closed_intervals(left: left, right: right)) do
-    [leaf_intervals1(left), leaf_intervals1(right)]
+    tree |> Tree.leaf_intervals()
   end
 
   @doc """
@@ -263,82 +187,32 @@ defmodule ClosedIntervals do
   def get_all_intervals(%__MODULE__{tree: tree, eq: eq, order: order}, value) do
     eq = eq || fn _, _ -> false end
 
-    left_bound = closed_intervals(tree, :left_bound)
-    right_bound = closed_intervals(tree, :right_bound)
+    left_bound = Tree.tree(tree, :left_bound)
+    right_bound = Tree.tree(tree, :right_bound)
 
     cond do
       order.(value, left_bound) ->
-        neg_inf = [{:"-inf", closed_intervals(tree, :left_bound)}]
+        neg_inf = [{:"-inf", Tree.tree(tree, :left_bound)}]
 
         if eq.(value, left_bound) do
-          neg_inf ++ get_all_intervals1(tree, value, eq, order)
+          neg_inf ++ Tree.get_all_intervals(tree, value, eq, order)
         else
           neg_inf
         end
 
       order.(right_bound, value) ->
-        pos_inf = [{closed_intervals(tree, :right_bound), :"+inf"}]
+        pos_inf = [{Tree.tree(tree, :right_bound), :"+inf"}]
 
         if eq.(value, right_bound) do
-          pos_inf ++ get_all_intervals1(tree, value, eq, order)
+          pos_inf ++ Tree.get_all_intervals(tree, value, eq, order)
         else
           pos_inf
         end
 
       true ->
-        get_all_intervals1(tree, value, eq, order)
+        Tree.get_all_intervals(tree, value, eq, order)
     end
     |> List.flatten()
-  end
-
-  defp get_all_intervals1(closed_intervals = closed_intervals(cut: nil), _value, _eq, _order) do
-    [
-      {closed_intervals(closed_intervals, :left_bound),
-       closed_intervals(closed_intervals, :right_bound)}
-    ]
-  end
-
-  defp get_all_intervals1(closed_intervals = closed_intervals(), value, eq, order) do
-    cut = closed_intervals(closed_intervals, :cut)
-
-    cond do
-      eq.(value, cut) ->
-        [
-          get_all_intervals1(closed_intervals(closed_intervals, :left), value, eq, order),
-          get_all_intervals1(closed_intervals(closed_intervals, :right), value, eq, order)
-        ]
-
-      order.(value, cut) ->
-        get_all_intervals1(closed_intervals(closed_intervals, :left), value, eq, order)
-
-      true ->
-        get_all_intervals1(closed_intervals(closed_intervals, :right), value, eq, order)
-    end
-  end
-
-  defp construct([x, y]) do
-    closed_intervals(
-      left_bound: x,
-      right_bound: y
-    )
-  end
-
-  defp construct(sorted_list = [_, _ | _]) do
-    len = length(sorted_list)
-    middle = floor(len / 2)
-    cut = Enum.at(sorted_list, middle)
-    {left, right} = Enum.split(sorted_list, middle)
-    left = left ++ [cut]
-    left = construct(left)
-    right = construct(right)
-
-    closed_intervals(
-      left: left,
-      right: right,
-      left_bound: closed_intervals(left, :left_bound),
-      right_bound: closed_intervals(right, :right_bound),
-      cut: cut
-    )
   end
 
   @doc """
@@ -361,18 +235,7 @@ defmodule ClosedIntervals do
   """
   @spec to_list(t(data)) :: [data] when data: var
   def to_list(closed_intervals = %__MODULE__{}) do
-    closed_intervals
-    |> leaf_intervals()
-    |> to_list1([])
-    |> Enum.reverse()
-  end
-
-  defp to_list1([{left, right}], acc) do
-    [right, left | acc]
-  end
-
-  defp to_list1([{left, _right} | rest], acc) do
-    to_list1(rest, [left | acc])
+    Tree.to_list(closed_intervals.tree)
   end
 
   @doc """
@@ -386,34 +249,7 @@ defmodule ClosedIntervals do
   """
   @spec map(t(data), (data -> data)) :: t(data) when data: var
   def map(closed_intervals = %__MODULE__{}, mapper) when is_function(mapper, 1) do
-    %__MODULE__{closed_intervals | tree: map1(closed_intervals.tree, mapper)}
-  end
-
-  defp map1(closed_intervals = closed_intervals(cut: nil), mapper) do
-    closed_intervals(left_bound: left_bound, right_bound: right_bound) = closed_intervals
-
-    closed_intervals(closed_intervals,
-      left_bound: mapper.(left_bound),
-      right_bound: mapper.(right_bound)
-    )
-  end
-
-  defp map1(closed_intervals = closed_intervals(), mapper) do
-    closed_intervals(
-      left: left,
-      right: right,
-      left_bound: left_bound,
-      right_bound: right_bound,
-      cut: cut
-    ) = closed_intervals
-
-    closed_intervals(closed_intervals,
-      left: map1(left, mapper),
-      right: map1(right, mapper),
-      left_bound: mapper.(left_bound),
-      right_bound: mapper.(right_bound),
-      cut: mapper.(cut)
-    )
+    %__MODULE__{closed_intervals | tree: Tree.map(closed_intervals.tree, mapper)}
   end
 
   @doc """
@@ -426,11 +262,7 @@ defmodule ClosedIntervals do
 
   """
   def left_bound(%__MODULE__{tree: tree}) do
-    left_bound(tree)
-  end
-
-  def left_bound(tree = closed_intervals()) do
-    closed_intervals(tree, :left_bound)
+    Tree.left_bound(tree)
   end
 
   @doc """
@@ -442,11 +274,7 @@ defmodule ClosedIntervals do
       3
   """
   def right_bound(%__MODULE__{tree: tree}) do
-    right_bound(tree)
-  end
-
-  def right_bound(tree = closed_intervals()) do
-    closed_intervals(tree, :right_bound)
+    Tree.right_bound(tree)
   end
 
   defimpl Inspect, for: ClosedIntervals do
