@@ -3,6 +3,8 @@ defmodule ClosedIntervalsTest do
   doctest ClosedIntervals, import: true
 
   import ClosedIntervals, except: [map: 2]
+  alias ClosedIntervals.Tree
+  require Tree
 
   use PropCheck
 
@@ -11,17 +13,16 @@ defmodule ClosedIntervalsTest do
       assert_raise ArgumentError, fn -> from([1]) end
 
       assert from([1, 2]) == %ClosedIntervals{
-               tree:
-                 closed_intervals(left: nil, right: nil, left_bound: 1, right_bound: 2, cut: nil),
+               tree: Tree.tree(left: nil, right: nil, left_bound: 1, right_bound: 2, cut: nil),
                order: &<=/2,
                eq: nil
              }
 
       assert from([1, 2, 3]) == %ClosedIntervals{
                tree:
-                 closed_intervals(
+                 Tree.tree(
                    left:
-                     closed_intervals(
+                     Tree.tree(
                        left: nil,
                        right: nil,
                        left_bound: 1,
@@ -29,7 +30,7 @@ defmodule ClosedIntervalsTest do
                        cut: nil
                      ),
                    right:
-                     closed_intervals(
+                     Tree.tree(
                        left: nil,
                        right: nil,
                        left_bound: 2,
@@ -44,7 +45,7 @@ defmodule ClosedIntervalsTest do
                eq: nil
              }
 
-      assert %{tree: closed_intervals()} = from([1, 2, 3, 4, 5])
+      assert %{tree: Tree.tree()} = from([1, 2, 3, 4, 5])
       assert from([1, 2, 3, 4, 5]) == from([5, 4, 3, 2, 1])
     end
 
