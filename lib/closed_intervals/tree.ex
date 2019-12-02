@@ -30,6 +30,8 @@ defmodule ClosedIntervals.Tree do
             cut: nil | data
           )
 
+  @type comparison :: :lt | :eq | :gt
+
   @doc """
   Construct a tree from a sorted list of data.
 
@@ -132,27 +134,48 @@ defmodule ClosedIntervals.Tree do
   @doc """
   See `ClosedIntervals.get_all_intervals/2`.
   """
-  def get_all_intervals(tree = tree(cut: nil), _value, _eq, _order) do
+  def get_all_intervals(tree, value, eq, order) do
+    get_all_intervals_by(tree, &mk_compare(value, &1, eq, order))
+  end
+
+  defp mk_compare(data1, data2, eq, order) do
+    cond do
+      eq.(data1, data2) -> :eq
+      order.(data1, data2) -> :lt
+      true -> :gt
+    end
+  end
+
+  @doc """
+  Get all intervals to which the given navigation function return `:eq`.
+
+  The function `navigation/1` says whether a given position is less than, greater than,
+  or equal to the desired position.
+  """
+  @spec get_all_intervals_by(t(data), (data -> comparison)) ::
+          [ClosedInterval.interval(data)]
+        when data: var
+  def get_all_intervals_by(tree = tree(cut: nil), _navigation) do
     [
       {tree(tree, :left_bound), tree(tree, :right_bound)}
     ]
   end
 
-  def get_all_intervals(tree = tree(), value, eq, order) do
+  def get_all_intervals_by(tree = tree(), navigation) do
     cut = tree(tree, :cut)
 
-    cond do
-      eq.(value, cut) ->
+    case navigation.(cut) do
+      :eq ->
         [
-          get_all_intervals(tree(tree, :left), value, eq, order),
-          get_all_intervals(tree(tree, :right), value, eq, order)
+          get_all_intervals_by(tree(tree, :left), navigation),
+          get_all_intervals_by(tree(tree, :right), navigation)
         ]
 
-      order.(value, cut) ->
-        get_all_intervals(tree(tree, :left), value, eq, order)
+      :lt ->
+        get_all_intervals_by(tree(tree, :left), navigation)
 
-      true ->
-        get_all_intervals(tree(tree, :right), value, eq, order)
+      :gt ->
+        get_all_intervals_by(tree(tree, :right), navigation)
     end
   end
 
