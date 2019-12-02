@@ -19,7 +19,7 @@ defmodule ClosedIntervals do
   @type t(data) :: %__MODULE__{
           tree: Tree.t(data),
           order: (data, data -> boolean()),
-          eq: (data, data -> boolean())
+          eq: (data, data -> boolean()) | nil
         }
 
   @doc """
