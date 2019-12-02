@@ -19,8 +19,10 @@ defmodule ClosedIntervals do
   @type t(data) :: %__MODULE__{
           tree: Tree.t(data),
           order: (data, data -> boolean()),
-          eq: (data, data -> boolean())
+          eq: (data, data -> boolean()) | nil
         }
+
+  @type interval(data) :: {data, data} | {:"-inf", data} | {data, :"+inf"}
 
   @doc """
   Create a new `ClosedIntervals` from points.
@@ -158,7 +160,7 @@ defmodule ClosedIntervals do
       iex> get_interval(closed_intervals, 3)
       {2, 5}
   """
-  @spec get_interval(t(data), data) :: {data, data} | {:"-inf", data} | {data, :"+inf"}
+  @spec get_interval(t(data), data) :: interval(data)
         when data: var
   def get_interval(closed_intervals = %__MODULE__{}, value) do
     case get_all_intervals(closed_intervals, value) do
@@ -182,7 +184,7 @@ defmodule ClosedIntervals do
   which are placed right at the interval bounds can then belong to multiple closed intervals.
 
   """
-  @spec get_all_intervals(t(data), data) :: [{data, data}] | [{:"-inf", data}] | [{data, :"+inf"}]
+  @spec get_all_intervals(t(data), data) :: [interval(data)]
         when data: var
   def get_all_intervals(%__MODULE__{tree: tree, eq: eq, order: order}, value) do
     eq = eq || fn _, _ -> false end
