@@ -1,4 +1,3 @@
-Compiling 1 file (.ex)
 Operating System: Linux
 CPU Information: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
 Number of Available Cores: 8
@@ -14,61 +13,61 @@ parallel: 1
 inputs: 1..10, 1..100, 1..1000
 Estimated total run time: 54 s
 
-Benchmarking IntervalTree.from/1 with input 1..10...
-Benchmarking IntervalTree.from/1 with input 1..100...
-Benchmarking IntervalTree.from/1 with input 1..1000...
+Benchmarking ClosedIntervals.from/1 with input 1..10...
+Benchmarking ClosedIntervals.from/1 with input 1..100...
+Benchmarking ClosedIntervals.from/1 with input 1..1000...
 Benchmarking LinearSearch.from/2 with input 1..10...
 Benchmarking LinearSearch.from/2 with input 1..100...
 Benchmarking LinearSearch.from/2 with input 1..1000...
 
 ##### With input 1..10 #####
-Name                          ips        average  deviation         median         99th %
-IntervalTree.from/1      468.97 K        2.13 μs   ±827.53%        1.93 μs        2.59 μs
-LinearSearch.from/2      275.42 K        3.63 μs   ±507.09%        2.99 μs       14.67 μs
+Name                             ips        average  deviation         median         99th %
+ClosedIntervals.from/1      403.08 K        2.48 μs   ±705.46%        2.07 μs       14.70 μs
+LinearSearch.from/2         265.93 K        3.76 μs   ±485.23%        3.08 μs       15.65 μs
 
 Comparison: 
-IntervalTree.from/1      468.97 K
-LinearSearch.from/2      275.42 K - 1.70x slower +1.50 μs
+ClosedIntervals.from/1      403.08 K
+LinearSearch.from/2         265.93 K - 1.52x slower +1.28 μs
 
 Memory usage statistics:
 
-Name                   Memory usage
-IntervalTree.from/1         3.14 KB
-LinearSearch.from/2         6.40 KB - 2.04x memory usage +3.26 KB
+Name                      Memory usage
+ClosedIntervals.from/1         3.16 KB
+LinearSearch.from/2            6.40 KB - 2.02x memory usage +3.23 KB
 
 **All measurements for memory usage were the same**
 
 ##### With input 1..100 #####
-Name                          ips        average  deviation         median         99th %
-IntervalTree.from/1       38.63 K       25.89 μs    ±22.48%       24.30 μs       53.03 μs
-LinearSearch.from/2       35.55 K       28.13 μs    ±20.25%       26.08 μs       43.63 μs
+Name                             ips        average  deviation         median         99th %
+ClosedIntervals.from/1       37.80 K       26.45 μs    ±31.30%       24.41 μs       60.43 μs
+LinearSearch.from/2          34.69 K       28.83 μs    ±22.12%       26.30 μs       54.61 μs
 
 Comparison: 
-IntervalTree.from/1       38.63 K
-LinearSearch.from/2       35.55 K - 1.09x slower +2.24 μs
+ClosedIntervals.from/1       37.80 K
+LinearSearch.from/2          34.69 K - 1.09x slower +2.38 μs
 
 Memory usage statistics:
 
-Name                   Memory usage
-IntervalTree.from/1        40.84 KB
-LinearSearch.from/2        62.93 KB - 1.54x memory usage +22.09 KB
+Name                      Memory usage
+ClosedIntervals.from/1        40.87 KB
+LinearSearch.from/2           62.93 KB - 1.54x memory usage +22.06 KB
 
 **All measurements for memory usage were the same**
 
 ##### With input 1..1000 #####
-Name                          ips        average  deviation         median         99th %
-LinearSearch.from/2        3.13 K      319.38 μs    ±19.46%      299.37 μs      648.17 μs
-IntervalTree.from/1        2.72 K      367.30 μs    ±19.43%      349.91 μs      651.79 μs
+Name                             ips        average  deviation         median         99th %
+LinearSearch.from/2           2.97 K      337.26 μs    ±27.13%      307.93 μs      749.24 μs
+ClosedIntervals.from/1        2.53 K      394.77 μs    ±29.90%      356.06 μs      902.69 μs
 
 Comparison: 
-LinearSearch.from/2        3.13 K
-IntervalTree.from/1        2.72 K - 1.15x slower +47.92 μs
+LinearSearch.from/2           2.97 K
+ClosedIntervals.from/1        2.53 K - 1.17x slower +57.51 μs
 
 Memory usage statistics:
 
-Name                   Memory usage
-LinearSearch.from/2       623.46 KB
-IntervalTree.from/1       476.67 KB - 0.76x memory usage -146.78906 KB
+Name                      Memory usage
+LinearSearch.from/2          623.46 KB
+ClosedIntervals.from/1       473.66 KB - 0.76x memory usage -149.79688 KB
 
 **All measurements for memory usage were the same**
 Operating System: Linux
@@ -83,63 +82,100 @@ warmup: 2 s
 time: 5 s
 memory time: 2 s
 parallel: 1
-inputs: 360, 384, 762
+inputs: 141, 597, 888
 Estimated total run time: 54 s
 
-Benchmarking IntervalTree.get_interval/2 with input 360...
-Benchmarking IntervalTree.get_interval/2 with input 384...
-Benchmarking IntervalTree.get_interval/2 with input 762...
-Benchmarking LinearSearch.get_interval/2 with input 360...
-Benchmarking LinearSearch.get_interval/2 with input 384...
-Benchmarking LinearSearch.get_interval/2 with input 762...
+Benchmarking ClosedIntervals.get_interval/2 with input 141...
+Benchmarking ClosedIntervals.get_interval/2 with input 597...
+Benchmarking ClosedIntervals.get_interval/2 with input 888...
+Benchmarking LinearSearch.get_interval/2 with input 141...
+Benchmarking LinearSearch.get_interval/2 with input 597...
+Benchmarking LinearSearch.get_interval/2 with input 888...
 
-##### With input 360 #####
-Name                                  ips        average  deviation         median         99th %
-IntervalTree.get_interval/2        2.05 M        0.49 μs  ±4351.24%        0.44 μs        0.69 μs
-LinearSearch.get_interval/2       0.179 M        5.59 μs    ±78.06%        5.55 μs        5.83 μs
+##### With input 141 #####
+Name                                     ips        average  deviation         median         99th %
+ClosedIntervals.get_interval/2        1.74 M        0.57 μs  ±4130.40%        0.46 μs        0.89 μs
+LinearSearch.get_interval/2           0.43 M        2.31 μs    ±46.01%        2.17 μs        4.80 μs
 
 Comparison: 
-IntervalTree.get_interval/2        2.05 M
-LinearSearch.get_interval/2       0.179 M - 11.48x slower +5.10 μs
+ClosedIntervals.get_interval/2        1.74 M
+LinearSearch.get_interval/2           0.43 M - 4.02x slower +1.73 μs
 
 Memory usage statistics:
 
-Name                           Memory usage
-IntervalTree.get_interval/2            56 B
-LinearSearch.get_interval/2             0 B - 0.00x memory usage -56 B
+Name                              Memory usage
+ClosedIntervals.get_interval/2            56 B
+LinearSearch.get_interval/2                0 B - 0.00x memory usage -56 B
 
 **All measurements for memory usage were the same**
 
-##### With input 384 #####
-Name                                  ips        average  deviation         median         99th %
-IntervalTree.get_interval/2        2.06 M        0.49 μs  ±4302.02%        0.45 μs        0.69 μs
-LinearSearch.get_interval/2       0.168 M        5.96 μs    ±12.18%        5.92 μs        6.21 μs
+##### With input 597 #####
+Name                                     ips        average  deviation         median         99th %
+ClosedIntervals.get_interval/2        1.76 M        0.57 μs  ±4353.40%        0.45 μs        1.45 μs
+LinearSearch.get_interval/2          0.105 M        9.51 μs    ±22.46%        9.22 μs       22.53 μs
 
 Comparison: 
-IntervalTree.get_interval/2        2.06 M
-LinearSearch.get_interval/2       0.168 M - 12.26x slower +5.47 μs
+ClosedIntervals.get_interval/2        1.76 M
+LinearSearch.get_interval/2          0.105 M - 16.76x slower +8.95 μs
 
 Memory usage statistics:
 
-Name                           Memory usage
-IntervalTree.get_interval/2            56 B
-LinearSearch.get_interval/2             0 B - 0.00x memory usage -56 B
+Name                              Memory usage
+ClosedIntervals.get_interval/2            56 B
+LinearSearch.get_interval/2                0 B - 0.00x memory usage -56 B
 
 **All measurements for memory usage were the same**
 
-##### With input 762 #####
-Name                                  ips        average  deviation         median         99th %
-IntervalTree.get_interval/2        2.02 M        0.50 μs  ±4245.23%        0.45 μs        0.70 μs
-LinearSearch.get_interval/2      0.0843 M       11.86 μs    ±11.81%       11.75 μs       12.37 μs
+##### With input 888 #####
+Name                                     ips        average  deviation         median         99th %
+ClosedIntervals.get_interval/2        1.78 M        0.56 μs  ±4276.15%        0.45 μs        1.54 μs
+LinearSearch.get_interval/2         0.0704 M       14.21 μs    ±18.26%       13.71 μs       28.45 μs
 
 Comparison: 
-IntervalTree.get_interval/2        2.02 M
-LinearSearch.get_interval/2      0.0843 M - 23.94x slower +11.36 μs
+ClosedIntervals.get_interval/2        1.78 M
+LinearSearch.get_interval/2         0.0704 M - 25.25x slower +13.65 μs
 
 Memory usage statistics:
 
-Name                           Memory usage
-IntervalTree.get_interval/2            56 B
-LinearSearch.get_interval/2             0 B - 0.00x memory usage -56 B
+Name                              Memory usage
+ClosedIntervals.get_interval/2            56 B
+LinearSearch.get_interval/2                0 B - 0.00x memory usage -56 B
+
+**All measurements for memory usage were the same**
+Operating System: Linux
+CPU Information: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+Number of Available Cores: 8
+Available memory: 15.58 GB
+Elixir 1.9.2
+Erlang 22.1
+
+Benchmark suite executing with the following configuration:
+warmup: 2 s
+time: 5 s
+memory time: 2 s
+parallel: 1
+inputs: none specified
+Estimated total run time: 27 s
+
+Benchmarking ClosedIntervals.leaf_intervals/1...
+Benchmarking ClosedIntervals.to_list/1...
+Benchmarking LinearSearch.to_list/1...
+
+Name                                       ips        average  deviation         median         99th %
+ClosedIntervals.leaf_intervals/1        7.15 K      139.88 μs    ±26.70%      133.54 μs      263.37 μs
+ClosedIntervals.to_list/1               6.58 K      151.97 μs    ±17.99%      144.91 μs      277.20 μs
+LinearSearch.to_list/1                  3.40 K      293.76 μs    ±23.61%      278.03 μs      563.78 μs
+
+Comparison: 
+ClosedIntervals.leaf_intervals/1        7.15 K
+ClosedIntervals.to_list/1               6.58 K - 1.09x slower +12.09 μs
+LinearSearch.to_list/1                  3.40 K - 2.10x slower +153.88 μs
+
+Memory usage statistics:
+
+Name                                Memory usage
+ClosedIntervals.leaf_intervals/1       225.91 KB
+ClosedIntervals.to_list/1              249.98 KB - 1.11x memory usage +24.06 KB
+LinearSearch.to_list/1                 408.95 KB - 1.81x memory usage +183.03 KB
 
 **All measurements for memory usage were the same**
