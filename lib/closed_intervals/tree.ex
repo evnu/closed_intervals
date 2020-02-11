@@ -153,7 +153,7 @@ defmodule ClosedIntervals.Tree do
   or equal to the desired position.
   """
   @spec get_all_intervals_by(t(data), (data -> comparison)) ::
-          [ClosedInterval.interval(data)]
+          [ClosedIntervals.interval(data)]
         when data: var
   def get_all_intervals_by(tree = tree(cut: nil), _navigation) do
     [
