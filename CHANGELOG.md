@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+* Add `ClosedIntervals.get_all_intervals_by/4` (thanks @turion)
+
 ## 0.5.0
 
 * Small refactorings and type spec fixes. Thanks @turion.
