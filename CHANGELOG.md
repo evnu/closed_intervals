@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0
+
+* Small refactorings and type spec fixes. Thanks @turion.
+
 ## 0.4.0
 
 * Added functions and tests to reconstruct a `ClosedIntervals` from a list or from leafs
