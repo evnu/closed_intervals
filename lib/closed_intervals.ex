@@ -139,7 +139,8 @@ defmodule ClosedIntervals do
         when data: var
   def get_interval(closed_intervals = %__MODULE__{}, value) do
     case get_all_intervals(closed_intervals, value) do
-      [interval] ->
+      # FIXME Hack to work around https://github.com/evnu/closed_intervals/issues/16
+      [interval | _] ->
         interval
 
       [inf = {:"-inf", _} | _] ->
