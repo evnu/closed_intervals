@@ -62,49 +62,44 @@ defmodule ClosedIntervalsTest do
 
   describe "custom order" do
     test "get_interval" do
-      order = fn a, b -> a.idx < b.idx end
-
       points =
         [a, b, c, _d] = [
-          %{idx: 1, data: :a},
-          %{idx: 2, data: :b},
-          %{idx: 3, data: :c},
-          %{idx: 4, data: :d}
+          %Indexed{idx: 1, data: :a},
+          %Indexed{idx: 2, data: :b},
+          %Indexed{idx: 3, data: :c},
+          %Indexed{idx: 4, data: :d}
         ]
 
       tree = from(points)
-      assert {a, b} == get_interval(tree, %{idx: 1})
-      assert {b, c} == get_interval(tree, %{idx: 2})
-      assert {a, b} == get_interval(tree, %{idx: 1.5})
+      assert {a, b} == get_interval(tree, %Indexed{idx: 1})
+      assert {b, c} == get_interval(tree, %Indexed{idx: 2})
+      assert {a, b} == get_interval(tree, %Indexed{idx: 1.5})
     end
   end
 
   test "get_all_intervals" do
-    order = fn a, b -> a.idx <= b.idx end
-    eq = fn a, b -> a.idx == b.idx end
-
     points =
       [a, b, c, d, e] = [
-        %{idx: 1, data: :a},
-        %{idx: 2, data: :b},
-        %{idx: 3, data: :c},
-        %{idx: 3, data: :x},
-        %{idx: 4, data: :d}
+        %Indexed{idx: 1, data: :a},
+        %Indexed{idx: 2, data: :b},
+        %Indexed{idx: 3, data: :c},
+        %Indexed{idx: 3, data: :x},
+        %Indexed{idx: 4, data: :d}
       ]
 
     tree = from(points)
 
-    assert [{:"-inf", a}] == get_all_intervals(tree, %{idx: 0})
-    assert [{:"-inf", a}, {a, b}] == get_all_intervals(tree, %{idx: 1})
-    assert [{a, b}, {b, c}] == get_all_intervals(tree, %{idx: 2})
-    assert [{a, b}] == get_all_intervals(tree, %{idx: 1.5})
+    assert [{:"-inf", a}] == get_all_intervals(tree, %Indexed{idx: 0})
+    assert [{:"-inf", a}, {a, b}] == get_all_intervals(tree, %Indexed{idx: 1})
+    assert [{a, b}, {b, c}] == get_all_intervals(tree, %Indexed{idx: 2})
+    assert [{a, b}] == get_all_intervals(tree, %Indexed{idx: 1.5})
 
-    assert [{e, :"+inf"}] == get_all_intervals(tree, %{idx: 5})
-    assert [{e, :"+inf"}, {d, e}] == get_all_intervals(tree, %{idx: 4})
+    assert [{e, :"+inf"}] == get_all_intervals(tree, %Indexed{idx: 5})
+    assert [{e, :"+inf"}, {d, e}] == get_all_intervals(tree, %Indexed{idx: 4})
 
     # non-unique idx
-    assert [{b, c}, {c, d}, {d, e}] == get_all_intervals(tree, %{idx: 3})
-    assert [{d, e}] == get_all_intervals(tree, %{idx: 3.5})
+    assert [{b, c}, {c, d}, {d, e}] == get_all_intervals(tree, %Indexed{idx: 3})
+    assert [{d, e}] == get_all_intervals(tree, %Indexed{idx: 3.5})
   end
 
   property "can reconstruct ClosedIntervals with from_leaf_intervals/1,2" do
