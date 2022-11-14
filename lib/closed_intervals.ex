@@ -13,13 +13,11 @@ defmodule ClosedIntervals do
   alias ClosedIntervals.Tree
   require Tree
 
-  @enforce_keys [:tree, :order, :eq]
+  @enforce_keys [:tree]
   defstruct @enforce_keys
 
   @type t(data) :: %__MODULE__{
-          tree: Tree.t(data),
-          order: (data, data -> boolean()),
-          eq: (data, data -> boolean()) | nil
+          tree: Tree.t(data)
         }
 
   @type interval(data) :: {data, data} | {:"-inf", data} | {data, :"+inf"}
@@ -54,9 +52,9 @@ defmodule ClosedIntervals do
 
   It can also handle nested types, if a suitable `order` is defined:
 
-      iex> points = [%{idx: 3}, %{idx: 7}, %{idx: 1}]
-      iex> points |> from(order: &(&1.idx <= &2.idx)) |> leaf_intervals()
-      [{%{idx: 1}, %{idx: 3}}, {%{idx: 3}, %{idx: 7}}]
+      iex> points = [%Indexed{idx: 3}, %Indexed{idx: 7}, %Indexed{idx: 1}]
+      iex> points |> from() |> leaf_intervals()
+      [{%Indexed{idx: 1}, %Indexed{idx: 3}}, {%Indexed{idx: 3}, %Indexed{idx: 7}}]
 
   ## Arguments
 
@@ -64,36 +62,17 @@ defmodule ClosedIntervals do
   * `:eq`: A custom equality defined on the points used to construct the `ClosedIntervals`
 
   """
-  @spec from(Enum.t(), Keyword.t()) :: t(term())
-  def from(enum, args \\ []) do
-    {order, eq} = parse_args!(args)
-
-    case Enum.sort(enum, order) do
+  @spec from(Enum.t()) :: t(term())
+  def from(enum) do
+    case Enum.sort(enum, Compare) do
       points = [_, _ | _] ->
         %__MODULE__{
-          tree: Tree.construct(points),
-          order: order,
-          eq: eq
+          tree: Tree.construct(points)
         }
 
       _ ->
         raise ArgumentError, "Need at least two points to construct a ClosedIntervals"
     end
-  end
-
-  defp parse_args!(args) do
-    order = Keyword.get(args, :order, &<=/2)
-    eq = Keyword.get(args, :eq)
-
-    if !is_function(order, 2) do
-      raise ArgumentError, "Expecting :order to be a function of arity 2"
-    end
-
-    if eq && !is_function(eq, 2) do
-      raise ArgumentError, "Expecting :eq to be a function of arity 2"
-    end
-
-    {order, eq}
   end
 
   @doc """
@@ -116,18 +95,14 @@ defmodule ClosedIntervals do
       true
 
   """
-  def from_leaf_intervals(leaf_intervals = [_ | _], args \\ []) do
+  def from_leaf_intervals(leaf_intervals = [_ | _]) do
     tree =
       leaf_intervals
       |> Enum.map(&Tree.from_bounds/1)
       |> Tree.from_leaf_intervals()
 
-    {order, eq} = parse_args!(args)
-
     %__MODULE__{
-      tree: tree,
-      order: order,
-      eq: eq
+      tree: tree
     }
   end
 
@@ -164,7 +139,8 @@ defmodule ClosedIntervals do
         when data: var
   def get_interval(closed_intervals = %__MODULE__{}, value) do
     case get_all_intervals(closed_intervals, value) do
-      [interval] ->
+      # FIXME Hack to work around https://github.com/evnu/closed_intervals/issues/16
+      [interval | _] ->
         interval
 
       [inf = {:"-inf", _} | _] ->
@@ -186,35 +162,44 @@ defmodule ClosedIntervals do
   """
   @spec get_all_intervals(t(data), data) :: [interval(data)]
         when data: var
-  def get_all_intervals(%__MODULE__{tree: tree, eq: eq, order: order}, value) do
-    eq = eq || fn _, _ -> false end
-
+  def get_all_intervals(%__MODULE__{tree: tree}, value) do
     left_bound = Tree.tree(tree, :left_bound)
     right_bound = Tree.tree(tree, :right_bound)
 
+    IO.inspect(
+      value: value,
+      tree: tree,
+      left_bound: left_bound,
+      right_bound: right_bound
+    )
+
     cond do
-      order.(value, left_bound) ->
+      Compare.compare(value, left_bound) in [:lt, :eq] ->
         neg_inf = [{:"-inf", Tree.tree(tree, :left_bound)}]
 
-        if eq.(value, left_bound) do
-          neg_inf ++ Tree.get_all_intervals(tree, value, eq, order)
+        if Compare.compare(value, left_bound) == :eq do
+          neg_inf ++ Tree.get_all_intervals(tree, value)
         else
           neg_inf
         end
+        |> IO.inspect(label: "first cond")
 
-      order.(right_bound, value) ->
+      Compare.compare(right_bound, value) in [:lt, :eq] ->
         pos_inf = [{Tree.tree(tree, :right_bound), :"+inf"}]
 
-        if eq.(value, right_bound) do
-          pos_inf ++ Tree.get_all_intervals(tree, value, eq, order)
+        if Compare.compare(right_bound, value) == :eq do
+          pos_inf ++ Tree.get_all_intervals(tree, value)
         else
           pos_inf
         end
+        |> IO.inspect(label: "second cond")
 
       true ->
-        Tree.get_all_intervals(tree, value, eq, order)
+        Tree.get_all_intervals(tree, value)
+        |> IO.inspect(label: "third cond")
     end
     |> List.flatten()
+    |> IO.inspect(label: "got all intervals")
   end
 
   @doc """
