@@ -13,9 +13,7 @@ defmodule ClosedIntervalsTest do
       assert_raise ArgumentError, fn -> from([1]) end
 
       assert from([1, 2]) == %ClosedIntervals{
-               tree: Tree.tree(left: nil, right: nil, left_bound: 1, right_bound: 2, cut: nil),
-               order: &<=/2,
-               eq: nil
+               tree: Tree.tree(left: nil, right: nil, left_bound: 1, right_bound: 2, cut: nil)
              }
 
       assert from([1, 2, 3]) == %ClosedIntervals{
@@ -40,9 +38,7 @@ defmodule ClosedIntervalsTest do
                    left_bound: 1,
                    right_bound: 3,
                    cut: 2
-                 ),
-               order: &<=/2,
-               eq: nil
+                 )
              }
 
       assert %{tree: Tree.tree()} = from([1, 2, 3, 4, 5])
@@ -76,7 +72,7 @@ defmodule ClosedIntervalsTest do
           %{idx: 4, data: :d}
         ]
 
-      tree = from(points, order: order)
+      tree = from(points)
       assert {a, b} == get_interval(tree, %{idx: 1})
       assert {b, c} == get_interval(tree, %{idx: 2})
       assert {a, b} == get_interval(tree, %{idx: 1.5})
@@ -96,7 +92,7 @@ defmodule ClosedIntervalsTest do
         %{idx: 4, data: :d}
       ]
 
-    tree = from(points, order: order, eq: eq)
+    tree = from(points)
 
     assert [{:"-inf", a}] == get_all_intervals(tree, %{idx: 0})
     assert [{:"-inf", a}, {a, b}] == get_all_intervals(tree, %{idx: 1})

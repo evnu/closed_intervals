@@ -35,7 +35,7 @@ defmodule ClosedIntervals.Tree do
   @doc """
   Construct a tree from a sorted list of data.
 
-  See `ClosedIntervals.from/2`.
+  See `ClosedIntervals.from/1`.
   """
   def construct([x, y]) do
     tree(
@@ -134,16 +134,8 @@ defmodule ClosedIntervals.Tree do
   @doc """
   See `ClosedIntervals.get_all_intervals/2`.
   """
-  def get_all_intervals(tree, value, eq, order) do
-    get_all_intervals_by(tree, &mk_compare(value, &1, eq, order))
-  end
-
-  defp mk_compare(data1, data2, eq, order) do
-    cond do
-      eq.(data1, data2) -> :eq
-      order.(data1, data2) -> :lt
-      true -> :gt
-    end
+  def get_all_intervals(tree, value) do
+    get_all_intervals_by(tree, &Compare.compare(value, &1))
   end
 
   @doc """
