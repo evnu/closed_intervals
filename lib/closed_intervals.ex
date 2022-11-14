@@ -52,9 +52,9 @@ defmodule ClosedIntervals do
 
   It can also handle nested types, if a suitable `order` is defined:
 
-      iex> points = [%{idx: 3}, %{idx: 7}, %{idx: 1}]
+      iex> points = [%Indexed{idx: 3}, %Indexed{idx: 7}, %Indexed{idx: 1}]
       iex> points |> from() |> leaf_intervals()
-      [{%{idx: 1}, %{idx: 3}}, {%{idx: 3}, %{idx: 7}}]
+      [{%Indexed{idx: 1}, %Indexed{idx: 3}}, {%Indexed{idx: 3}, %Indexed{idx: 7}}]
 
   ## Arguments
 

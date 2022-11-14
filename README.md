@@ -57,11 +57,11 @@ makes sense. This is done by defining an explicit order on
 `ClosedIntervals.from/2` and `ClosedIntervals.get_interval/2`:
 
     iex> import ClosedIntervals
-    iex> points = [%{idx: 1, data: :hello}, %{idx: 5, data: :world}]
+    iex> points = [%Indexed{idx: 1, data: :hello}, %Indexed{idx: 5, data: :world}]
     iex> order = fn a, b -> a.idx <= b.idx end
     iex> closed_intervals = from(points, order: order)
-    iex> get_interval(closed_intervals, %{idx: 3})
-    {%{idx: 1, data: :hello}, %{idx: 5, data: :world}}
+    iex> get_interval(closed_intervals, %Indexed{idx: 3})
+    {%Indexed{idx: 1, data: :hello}, %Indexed{idx: 5, data: :world}}
 
 `ClosedIntervals` can also handle non-unique indices. This is useful when defining
 a function step-wise. Note that in such a case, the intervals for a value should be retrieved
@@ -70,17 +70,17 @@ we must define an equality function as well. Usually, this function compares the
 the order function.
 
     iex> import ClosedIntervals
-    iex> points = [%{idx: 1, data: :hello}, %{idx: 1, data: :between}, %{idx: 5, data: :world}]
+    iex> points = [%Indexed{idx: 1, data: :hello}, %Indexed{idx: 1, data: :between}, %Indexed{idx: 5, data: :world}]
     iex> order = fn a, b -> a.idx <= b.idx end
     iex> eq = fn a, b -> a.idx == b.idx end
     iex> closed_intervals = from(points, order: order, eq: eq)
-    iex> get_all_intervals(closed_intervals, %{idx: 3})
-    [{%{idx: 1, data: :between}, %{idx: 5, data: :world}}]
-    iex> get_all_intervals(closed_intervals, %{idx: 1})
+    iex> get_all_intervals(closed_intervals, %Indexed{idx: 3})
+    [{%Indexed{idx: 1, data: :between}, %Indexed{idx: 5, data: :world}}]
+    iex> get_all_intervals(closed_intervals, %Indexed{idx: 1})
     [
-	{:"-inf", %{idx: 1, data: :hello}},
-	{%{idx: 1, data: :hello}, %{idx: 1, data: :between}},
-	{%{idx: 1, data: :between}, %{idx: 5, data: :world}}
+	{:"-inf", %Indexed{idx: 1, data: :hello}},
+	{%Indexed{idx: 1, data: :hello}, %Indexed{idx: 1, data: :between}},
+	{%Indexed{idx: 1, data: :between}, %Indexed{idx: 5, data: :world}}
     ]
 
 ## Inspect
